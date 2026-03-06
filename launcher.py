@@ -136,6 +136,15 @@ def main():
     if browser_path:
         # Usar un perfil aislado para garantizar que respeta el tamaño y guarda estado propio
         user_data_dir = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Clicker-SAP", "ChromeProfile")
+
+        # Limpiar caché del perfil para evitar errores de módulos JS obsoletos
+        cache_dirs = ["Cache", "Code Cache", "Service Worker"]
+        for cdir in cache_dirs:
+            cache_path = os.path.join(user_data_dir, "Default", cdir)
+            if os.path.isdir(cache_path):
+                import shutil
+                shutil.rmtree(cache_path, ignore_errors=True)
+
         # Modo App abre el browser sin pestañas ni barra de búsqueda
         subprocess.Popen([
             browser_path, 
@@ -143,7 +152,9 @@ def main():
             f"--window-size={WINDOW_WIDTH},{WINDOW_HEIGHT}",
             f"--user-data-dir={user_data_dir}",
             "--no-first-run",
-            "--no-default-browser-check"
+            "--no-default-browser-check",
+            "--disk-cache-size=1",
+            "--aggressive-cache-discard",
         ])
 
         # 2b. Poner la ventana siempre visible (always on top)
