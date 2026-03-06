@@ -8,7 +8,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -26,9 +25,11 @@ share/python-wheels/
 *.egg
 PIPFILE.lock
 
-# PyInstaller
+# PyInstaller - Ignore generated files but keep config
+build/build/
+!build/*.bat
+!build/*.spec
 *.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -136,7 +137,6 @@ dmypy.json
 cython_debug/
 
 # IDEs
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -146,11 +146,20 @@ cython_debug/
 .DS_Store
 Thumbs.db
 
-# Grabaciones JSON (excepto ejemplos)
+# ──────────────────────────────────────────────────────
+# Clicker-SAP específico
+# ──────────────────────────────────────────────────────
+
+# Grabaciones de usuario (mantener solo .gitkeep)
 recordings/*.json
 !recordings/.gitkeep
-!recordings/example_*.json
 
-# Archivos JSON en raíz
-*.json
-!example_recording.json
+# Grabaciones en el paquete (artefactos de desarrollo)
+clicker_sap/recordings/
+
+# Builds y distribución
+dist/
+build/build/
+
+# VSCode settings (mantener si es necesario para el equipo)
+# .vscode/

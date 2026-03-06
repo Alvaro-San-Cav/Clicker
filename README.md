@@ -1,20 +1,39 @@
 # Clicker-SAP 🖱️
 
-Un grabador y reproductor de movimientos del mouse desarrollado en Python. Perfecto para automatizar tareas repetitivas que requieren interacción con el mouse.
+Un grabador y reproductor de eventos de mouse y teclado desarrollado en Python con interfaz gráfica moderna. Perfecto para automatizar tareas repetitivas que requieren interacción precisa.
 
-## 📋 Características
+## ✨ Características
 
-- **Grabación de eventos del mouse**: Captura movimientos, clics y scroll
-- **Reproducción precisa**: Reproduce los eventos grabados con timing exacto
-- **Velocidad ajustable**: Reproduce a velocidad normal, lenta o rápida
-- **Persistencia de rutinas**: Sistema completo de gestión de rutinas guardadas
-- **Auto-guardado**: Opción para guardar automáticamente después de grabar
-- **Gestión de rutinas**: Listar, cargar, eliminar rutinas guardadas
-- **Metadata detallada**: Cada rutina incluye fecha, duración y cantidad de eventos
-- **Cancelación con ESC**: Detén la grabación o reproducción en cualquier momento
-- **Interfaz de consola intuitiva**: Menú organizado y fácil de usar
+- **🎯 Grabación completa**: Captura movimientos del mouse, clics, scroll y teclas
+- **⚡ Reproducción precisa**: Reproduce eventos con timing exacto
+- **🎚️ Velocidad ajustable**: Controla la velocidad de reproducción (0.5x - 10x)
+- **💾 Gestión de rutinas**: Guarda, carga, edita y elimina rutinas fácilmente
+- **📅 Sistema de alertas**: Programa rutinas para ejecutarse automáticamente
+- **⏱️ Recorte automático**: Elimina los últimos segundos de grabación (útil para quitar el clic de detener)
+- **⌨️ Grabación de teclado**: Opción para incluir pulsaciones de teclas
+- **🌐 Multiidioma**: Interfaz en Español e Inglés
+- **🎨 Interfaz moderna**: UI oscura y profesional con Streamlit
+- **🖥️ Modo ventana nativa**: Ejecuta como aplicación independiente
 
-## 🚀 Instalación
+## � Descarga rápida (Windows)
+
+Si solo quieres usar la aplicación sin instalar Python:
+
+1. Ve a la sección [**Releases**](https://github.com/Alvaro-San-Cav/Clicker-SAP/releases) del repositorio
+2. Descarga `ClickerSAP.exe` de la última versión
+3. Ejecuta el `.exe` — no necesitas instalar nada más
+
+> ⚠️ Windows puede mostrar una advertencia de SmartScreen al ejecutar el `.exe` por primera vez. Haz clic en **"Más información" → "Ejecutar de todas formas"**.
+
+## 🚀 Instalación desde código fuente
+
+### Requisitos previos
+
+- **Python 3.9+** ([descargar](https://www.python.org/downloads/))
+- **Windows 10/11** (el modo ventana nativa usa Chrome/Edge)
+- **Google Chrome** o **Microsoft Edge** (para el modo ventana nativa)
+
+### Pasos
 
 1. Clona este repositorio:
 ```bash
@@ -25,8 +44,7 @@ cd Clicker-SAP
 2. Crea un entorno virtual (recomendado):
 ```bash
 python -m venv .venv
-.venv\Scripts\activate  # En Windows
-source .venv/bin/activate  # En Linux/Mac
+.venv\Scripts\activate
 ```
 
 3. Instala las dependencias:
@@ -34,66 +52,97 @@ source .venv/bin/activate  # En Linux/Mac
 pip install -r requirements.txt
 ```
 
-## 📦 Dependencias
+## 💻 Uso
 
-- `pynput`: Control y monitoreo del mouse y teclado
+### Modo aplicación (recomendado):
+```bash
+python launcher.py
+```
+Abre la aplicación en una ventana nativa sin pestañas del navegador.
+
+### Modo navegador:
+```bash
+streamlit run clicker_sap/app.py
+```
+Abre la aplicación en tu navegador predeterminado.
 
 ## 📁 Estructura del proyecto
 
+Ver [STRUCTURE.md](STRUCTURE.md) para detalles completos de la arquitectura.
+
 ```
-autoclick/
-├── main.py                          # Código principal del grabador
-├── recordings/                      # Carpeta de rutinas guardadas
-│   ├── .gitkeep                    # Mantiene la carpeta en Git
-│   └── example_simple_clicks.json  # Ejemplo de rutina
-├── requirements.txt                 # Dependencias de Python
-├── README.md                        # Documentación
-├── LICENSE                          # Licencia MIT
-└── .gitignore                       # Archivos ignorados por Git
+Clicker-SAP/
+├── clicker_sap/              # Paquete principal
+│   ├── app.py               # Interfaz Streamlit
+│   ├── recorder.py          # Lógica de grabación/reproducción
+│   ├── scheduler.py         # Sistema de alertas programadas
+│   └── i18n.py              # Traducciones (ES/EN)
+├── launcher.py              # Lanzador de aplicación nativa
+├── recordings/              # Rutinas guardadas (JSON)
+├── build/                   # Scripts y configuración para compilar .exe
+├── examples/                # Versión de consola (legacy)
+└── requirements.txt         # Dependencias de Python
 ```
 
-## 💻 Uso
+## 📦 Dependencias
 
-Ejecuta el programa:
+| Paquete | Descripción |
+|---------|-------------|
+| `streamlit` | Framework de interfaz web interactiva |
+| `pynput` | Control y monitoreo del mouse y teclado |
+
+## 🎮 Guía de uso
+
+### 1️⃣ Grabar una rutina
+1. Ve a la pestaña **"Grabación"**
+2. Escribe un nombre y descripción (opcional)
+3. Marca **"⌨️ Grabar también el teclado"** si necesitas capturar teclas
+4. Haz clic en **"INICIAR GRABACIÓN"**
+5. Realiza las acciones que deseas automatizar
+6. Haz clic en **"DETENER GRABACIÓN"**
+7. La rutina se guarda automáticamente
+
+### 2️⃣ Gestionar rutinas
+1. Ve a la pestaña **"Mis Rutinas"**
+2. Visualiza todas tus rutinas guardadas
+3. Acciones disponibles:
+   - **▶**: Reproducir
+   - **📥**: Cargar en memoria
+   - **📋**: Duplicar
+   - **🗑**: Eliminar
+4. Usa la sección de **edición rápida** para:
+   - Renombrar rutinas
+   - Ajustar velocidad predeterminada
+   - Modificar descripción
+
+### 3️⃣ Programar alertas
+1. Ve a la pestaña **"Alertas"**
+2. Rellena el formulario:
+   - Nombre de la alerta
+   - Rutina a ejecutar
+   - Fecha y hora
+   - Frecuencia (una vez, diaria, semanal, laborables)
+3. Haz clic en **"Añadir Alerta"**
+4. Activa/desactiva o elimina alertas según necesites
+
+### 4️⃣ Configuración
+1. Ve a la pestaña **"Configuración"**
+2. Ajusta:
+   - **Idioma**: Español o Inglés
+   - **Recorte automático**: Elimina los últimos X segundos de cada grabación
+
+## 🔨 Compilar ejecutable (.exe)
+
+Para generar un ejecutable independiente que no requiera Python instalado:
+
 ```bash
-python main.py
+cd build
+build_exe.bat
 ```
 
-### Menú principal:
+> Requiere PyInstaller (se instala automáticamente durante el build).
 
-**GRABACIÓN:**
-1. **Grabar nuevos movimientos**: Inicia la grabación de tus movimientos del mouse
-   - Al terminar, puedes guardar automáticamente la rutina
-2. **Reproducir última grabación**: Reproduce la última sesión grabada
-3. **Reproducir con velocidad personalizada**: Ajusta la velocidad de reproducción
-
-**GESTIÓN DE RUTINAS:**
-4. **Guardar grabación actual**: Guarda la grabación con un nombre específico
-5. **Listar todas las rutinas guardadas**: Muestra todas las rutinas con detalles
-6. **Cargar rutina específica**: Carga una rutina previamente guardada
-7. **Eliminar rutina guardada**: Elimina rutinas que ya no necesites
-8. **Auto-guardar grabación actual**: Guarda con nombre automático (timestamp)
-
-**INFO:**
-9. **Ver cantidad de eventos grabados**: Información de la sesión actual
-0. **Salir**: Cierra el programa (pregunta si hay cambios sin guardar)
-
-### Atajos de teclado:
-
-- **ESC**: Detener grabación o reproducción en curso
-
-### Sistema de persistencia:
-
-Las rutinas se guardan en la carpeta `recordings/` con el siguiente formato:
-- **Auto-generado**: `routine_YYYYMMDD_HHMMSS.json`
-- **Personalizado**: `nombre_personalizado.json`
-
-Cada rutina incluye:
-- Nombre de la rutina
-- Fecha y hora de creación
-- Cantidad de eventos
-- Duración total
-- Todos los eventos grabados
+El ejecutable se generará en `dist/ClickerSAP.exe`. Puedes distribuir este archivo directamente.
 
 ## 📝 Formato de grabación
 
@@ -141,11 +190,11 @@ Las grabaciones se guardan en formato JSON con metadata y eventos:
 
 El programa es compatible con grabaciones antiguas (solo array de eventos).
 
-## ⚠️ Advertencias
+## ⚠️ Notas importantes
 
-- Asegúrate de tener permisos de accesibilidad habilitados en tu sistema operativo
-- En macOS, puede ser necesario dar permisos en *Preferencias del Sistema > Seguridad y Privacidad > Accesibilidad*
-- En Linux, asegúrate de que tu usuario tenga acceso a `/dev/uinput`
+- **Solo Windows**: El modo ventana nativa y la compilación .exe están diseñados para Windows 10/11
+- Asegúrate de tener **Google Chrome** o **Microsoft Edge** instalado para el modo ventana nativa
+- En Linux/macOS puedes usar el modo navegador (`streamlit run clicker_sap/app.py`) pero sin modo ventana nativa
 - Usa este software de manera responsable y ética
 
 ## 🤝 Contribuciones
