@@ -9,7 +9,7 @@ from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT
 block_cipher = None
 
 # Directorio raíz del proyecto (un nivel arriba de build/)
-project_dir = os.path.dirname(os.path.abspath(SPEC))
+project_dir = os.path.dirname(os.path.dirname(os.path.abspath(SPEC)))
 
 # Localizar los archivos estáticos de Streamlit (necesarios en tiempo de ejecución)
 streamlit_dir = os.path.dirname(importlib.import_module('streamlit').__file__)
