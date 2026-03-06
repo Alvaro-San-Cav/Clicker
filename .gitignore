@@ -160,6 +160,13 @@ clicker_sap/recordings/
 # Builds y distribución
 dist/
 build/build/
+build/clicker_sap/
+build/*.pyz
+build/*.toc
+build/*.pkg
+build/*.html
+build/*.txt
+build/[0-9]*
 
 # VSCode settings (mantener si es necesario para el equipo)
 # .vscode/
