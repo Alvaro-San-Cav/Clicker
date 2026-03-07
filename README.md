@@ -1,21 +1,21 @@
-# Autoclicker 🖱️
+# Autoclicker
 
 Un grabador y reproductor de eventos de mouse y teclado desarrollado en Python con interfaz gráfica moderna. Perfecto para automatizar tareas repetitivas que requieren interacción precisa.
 
-## ✨ Características
+## Características
 
-- **🎯 Grabación completa**: Captura movimientos del mouse, clics, scroll y teclas
-- **⚡ Reproducción precisa**: Reproduce eventos con timing exacto
-- **🎚️ Velocidad ajustable**: Controla la velocidad de reproducción (0.5x - 10x)
-- **💾 Gestión de rutinas**: Guarda, carga, edita y elimina rutinas fácilmente
-- **📅 Sistema de alertas**: Programa rutinas para ejecutarse automáticamente
-- **⏱️ Recorte automático**: Elimina los últimos segundos de grabación (útil para quitar el clic de detener)
-- **⌨️ Grabación de teclado**: Opción para incluir pulsaciones de teclas
-- **🌐 Multiidioma**: Interfaz en Español e Inglés
-- **🎨 Interfaz moderna**: UI oscura y profesional con Streamlit
-- **🖥️ Modo ventana nativa**: Ejecuta como aplicación independiente
+- **Grabación completa**: Captura movimientos del mouse, clics, scroll y teclas
+- **Reproducción precisa**: Reproduce eventos con timing exacto
+- **Velocidad ajustable**: Controla la velocidad de reproducción (0.5x - 10x)
+- **Gestión de rutinas**: Guarda, carga, edita y elimina rutinas fácilmente
+- **Sistema de alertas**: Programa rutinas para ejecutarse automáticamente
+- **Recorte automático**: Elimina los últimos segundos de grabación (útil para quitar el clic de detener)
+- **Grabación de teclado**: Opción para incluir pulsaciones de teclas
+- **Multiidioma**: Interfaz en Español e Inglés
+- **Interfaz moderna**: UI oscura y profesional con Streamlit
+- **Modo ventana nativa**: Ejecuta como aplicación independiente
 
-## � Descarga rápida (Windows)
+## Descarga rápida (Windows)
 
 Si solo quieres usar la aplicación sin instalar Python:
 
@@ -23,9 +23,9 @@ Si solo quieres usar la aplicación sin instalar Python:
 2. Descarga `Autoclicker.exe` de la última versión
 3. Ejecuta el `.exe` — no necesitas instalar nada más
 
-> ⚠️ Windows puede mostrar una advertencia de SmartScreen al ejecutar el `.exe` por primera vez. Haz clic en **"Más información" → "Ejecutar de todas formas"**.
+> Nota: Windows puede mostrar una advertencia de SmartScreen al ejecutar el `.exe` por primera vez. Haz clic en **"Más información" → "Ejecutar de todas formas"**.
 
-## 🚀 Instalación desde código fuente
+## Instalación desde código fuente
 
 ### Requisitos previos
 
@@ -52,7 +52,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## 💻 Uso
+## Uso
 
 ### Modo aplicación (recomendado):
 ```bash
@@ -66,7 +66,7 @@ streamlit run autoclicker/app.py
 ```
 Abre la aplicación en tu navegador predeterminado.
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 Ver [STRUCTURE.md](STRUCTURE.md) para detalles completos de la arquitectura.
 
@@ -84,38 +84,37 @@ Autoclicker/
 └── requirements.txt         # Dependencias de Python
 ```
 
-## 📦 Dependencias
+## Dependencias
 
 | Paquete | Descripción |
 |---------|-------------|
 | `streamlit` | Framework de interfaz web interactiva |
 | `pynput` | Control y monitoreo del mouse y teclado |
 
-## 🎮 Guía de uso
+## Guía de uso
 
-### 1️⃣ Grabar una rutina
+### 1. Grabar una rutina
 1. Ve a la pestaña **"Grabación"**
 2. Escribe un nombre y descripción (opcional)
-3. Marca **"⌨️ Grabar también el teclado"** si necesitas capturar teclas
+3. Marca **"Grabar también el teclado"** si necesitas capturar teclas
 4. Haz clic en **"INICIAR GRABACIÓN"**
 5. Realiza las acciones que deseas automatizar
 6. Haz clic en **"DETENER GRABACIÓN"**
 7. La rutina se guarda automáticamente
 
-### 2️⃣ Gestionar rutinas
+### 2. Gestionar rutinas
 1. Ve a la pestaña **"Mis Rutinas"**
 2. Visualiza todas tus rutinas guardadas
 3. Acciones disponibles:
-   - **▶**: Reproducir
-   - **📥**: Cargar en memoria
-   - **📋**: Duplicar
-   - **🗑**: Eliminar
+   - Reproducir
+   - Marcar como Favorito
+   - Eliminar
 4. Usa la sección de **edición rápida** para:
    - Renombrar rutinas
    - Ajustar velocidad predeterminada
    - Modificar descripción
 
-### 3️⃣ Programar alertas
+### 3. Programar alertas
 1. Ve a la pestaña **"Alertas"**
 2. Rellena el formulario:
    - Nombre de la alerta
@@ -125,13 +124,13 @@ Autoclicker/
 3. Haz clic en **"Añadir Alerta"**
 4. Activa/desactiva o elimina alertas según necesites
 
-### 4️⃣ Configuración
+### 4. Configuración
 1. Ve a la pestaña **"Configuración"**
 2. Ajusta:
    - **Idioma**: Español o Inglés
    - **Recorte automático**: Elimina los últimos X segundos de cada grabación
 
-## 🔨 Compilar ejecutable (.exe)
+## Compilar ejecutable (.exe)
 
 Para generar un ejecutable independiente que no requiera Python instalado:
 
@@ -144,7 +143,7 @@ build_exe.bat
 
 El ejecutable se generará en `dist/Autoclicker.exe`. Puedes distribuir este archivo directamente.
 
-## 📝 Formato de grabación
+## Formato de grabación
 
 Las grabaciones se guardan en formato JSON con metadata y eventos:
 
@@ -190,32 +189,15 @@ Las grabaciones se guardan en formato JSON con metadata y eventos:
 
 El programa es compatible con grabaciones antiguas (solo array de eventos).
 
-## ⚠️ Notas importantes
+## Notas importantes
 
 - **Solo Windows**: El modo ventana nativa y la compilación .exe están diseñados para Windows 10/11
 - Asegúrate de tener **Google Chrome** o **Microsoft Edge** instalado para el modo ventana nativa
 - En Linux/macOS puedes usar el modo navegador (`streamlit run autoclicker/app.py`) pero sin modo ventana nativa
 - Usa este software de manera responsable y ética
 
-## 🤝 Contribuciones
 
-Las contribuciones son bienvenidas. Por favor:
-
-1. Haz fork del proyecto
-2. Crea una rama para tu característica (`git checkout -b feature/nueva-caracteristica`)
-3. Commit tus cambios (`git commit -am 'Agrega nueva característica'`)
-4. Push a la rama (`git push origin feature/nueva-caracteristica`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 👨‍💻 Autor
-
-Desarrollado por Alvaro San Cav
-
-## 🔗 Enlaces
+## Enlaces
 
 - [Repositorio GitHub](https://github.com/Alvaro-San-Cav/Autoclicker)
 - [Documentación de pynput](https://pynput.readthedocs.io/)
