@@ -11,6 +11,23 @@ import time
 import socket
 import threading
 
+# ──────────────────────────────────────────
+# Configuración DPI Awareness para Windows
+# ──────────────────────────────────────────
+if sys.platform == "win32":
+    try:
+        import ctypes
+        # Configurar el proceso como DPI aware para coordenadas precisas del mouse
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)  # PROCESS_PER_MONITOR_DPI_AWARE
+        except Exception:
+            try:
+                ctypes.windll.user32.SetProcessDPIAware()
+            except Exception:
+                pass
+    except Exception:
+        pass
+
 STREAMLIT_PORT = 8501
 WINDOW_WIDTH = 450
 WINDOW_HEIGHT = 650

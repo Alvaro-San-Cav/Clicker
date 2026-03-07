@@ -6,10 +6,31 @@ Clicker SAP - Módulo de grabación y reproducción
 import time
 import json
 import os
+import sys
 from datetime import datetime
 from pynput import mouse, keyboard
 from pynput.mouse import Button, Controller as MouseController
 from pynput.keyboard import Key, Listener as KeyboardListener
+
+# ──────────────────────────────────────────
+# Configuración DPI Awareness para Windows
+# ──────────────────────────────────────────
+if sys.platform == "win32":
+    try:
+        import ctypes
+        # Intenta configurar el proceso como DPI aware
+        # Esto evita el escalado automático de Windows y permite coordenadas precisas
+        try:
+            # Para Windows 10 1607 y superior (SetProcessDpiAwarenessContext)
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)  # PROCESS_PER_MONITOR_DPI_AWARE
+        except Exception:
+            try:
+                # Para Windows Vista y superior (SetProcessDPIAware)
+                ctypes.windll.user32.SetProcessDPIAware()
+            except Exception:
+                pass  # Si falla, continúa sin DPI awareness
+    except Exception:
+        pass  # Si ctypes no está disponible o hay error, continúa normalmente
 
 
 class MouseRecorder:

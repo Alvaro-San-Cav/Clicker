@@ -11,6 +11,23 @@ import time
 import streamlit as st
 from datetime import datetime, timedelta
 
+# ──────────────────────────────────────────
+# Configuración DPI Awareness para Windows
+# ──────────────────────────────────────────
+if sys.platform == "win32":
+    try:
+        import ctypes
+        # Configurar el proceso como DPI aware para coordenadas precisas del mouse
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)  # PROCESS_PER_MONITOR_DPI_AWARE
+        except Exception:
+            try:
+                ctypes.windll.user32.SetProcessDPIAware()
+            except Exception:
+                pass
+    except Exception:
+        pass
+
 # Asegurar que el directorio raíz del proyecto sea el CWD
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(project_root)
