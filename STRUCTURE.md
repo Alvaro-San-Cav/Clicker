@@ -1,12 +1,12 @@
 # Estructura del Proyecto
 
-Este documento describe la organización del código de Clicker-SAP.
+Este documento describe la organización del código de Autoclicker.
 
 ## Arquitectura
 
 ```
-Clicker-SAP/
-├── clicker_sap/              # 📦 Paquete principal de la aplicación
+Autoclicker/
+├── autoclicker/              # 📦 Paquete principal de la aplicación
 │   ├── __init__.py          # Inicialización del paquete, exporta clases principales
 │   ├── app.py               # 🎨 Interfaz de usuario con Streamlit
 │   ├── recorder.py          # 🎯 Lógica de grabación y reproducción de eventos
@@ -19,7 +19,7 @@ Clicker-SAP/
 │
 ├── build/                   # 🔨 Herramientas de compilación
 │   ├── build_exe.bat        # Script para compilar .exe con PyInstaller
-│   └── clicker_sap.spec     # Configuración de PyInstaller
+│   └── autoclicker.spec     # Configuración de PyInstaller
 │
 ├── examples/                # 📚 Código legacy
 │   ├── README.md
@@ -37,50 +37,50 @@ Clicker-SAP/
 
 ## Módulos principales
 
-### `clicker_sap/recorder.py` - MouseRecorder
+### `autoclicker/recorder.py` - MouseRecorder
 Clase principal para grabación y reproducción:
 - **Grabación**: Captura eventos de mouse (move, click, scroll) y teclado
 - **Reproducción**: Reproduce eventos con control de velocidad
 - **Persistencia**: Guarda/carga rutinas en JSON
 - **Edición**: Renombra, duplica, elimina rutinas
 
-### `clicker_sap/scheduler.py` - AlertManager
+### `autoclicker/scheduler.py` - AlertManager
 Sistema de tareas programadas:
 - **Alertas**: Programación de rutinas para fechas/horas específicas
 - **Repetición**: Una vez, diaria, semanal, laborables
 - **Estado**: Activa/desactiva alertas sin eliminarlas
 
-### `clicker_sap/app.py` - Interfaz Streamlit
+### `autoclicker/app.py` - Interfaz Streamlit
 Aplicación web interactiva con 4 pestañas:
 1. **Grabación**: Crear nuevas rutinas
 2. **Mis Rutinas**: Gestionar rutinas guardadas
 3. **Alertas**: Programar ejecuciones automáticas
 4. **Configuración**: Ajustes de idioma y comportamiento
 
-### `clicker_sap/i18n.py` - Internacionalización
+### `autoclicker/i18n.py` - Internacionalización
 Sistema de traducciones multiidioma (ES/EN).
 
 ## Flujo de ejecución
 
 ### Modo aplicación nativa
 ```
-launcher.py → streamlit run clicker_sap/app.py → abre en Chrome/Edge -app mode
+launcher.py → streamlit run autoclicker/app.py → abre en Chrome/Edge -app mode
 ```
 
 ### Modo navegador
 ```
-streamlit run clicker_sap/app.py → abre en navegador con pestañas
+streamlit run autoclicker/app.py → abre en navegador con pestañas
 ```
 
 ### Compilado
 ```
-ClickerSAP.exe → bundle con todo incluido (PyInstaller)
+Autoclicker.exe → bundle con todo incluido (PyInstaller)
 ```
 
 ## Notas de desarrollo
 
 ### Imports
-- Los archivos dentro de `clicker_sap/` usan imports relativos: `from .recorder import ...`
+- Los archivos dentro de `autoclicker/` usan imports relativos: `from .recorder import ...`
 - El `__init__.py` exporta las clases principales para facilitar imports externos
 
 ### Paths

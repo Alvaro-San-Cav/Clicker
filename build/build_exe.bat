@@ -1,7 +1,7 @@
 @echo off
-title Clicker SAP - Build EXE
+title Autoclicker - Build EXE
 echo ============================================
-echo   Clicker SAP - Generador de ejecutable
+echo   Autoclicker - Generador de ejecutable
 echo ============================================
 echo.
 
@@ -34,7 +34,7 @@ if errorlevel 1 (
 :: Compilar
 echo [3/4] Compilando el ejecutable...
 cd ..
-pyinstaller build\clicker_sap.spec --noconfirm
+pyinstaller build\autoclicker.spec --noconfirm
 if errorlevel 1 (
     echo [ERROR] La compilacion fallo. Revisa los errores de arriba.
     pause
@@ -48,7 +48,7 @@ if not exist "dist\recordings" mkdir "dist\recordings"
 echo.
 echo [4/4] Listo!
 echo ============================================
-echo   El ejecutable esta en: dist\ClickerSAP.exe
+echo   El ejecutable esta en: dist\Autoclicker.exe
 echo   Distribuye la carpeta dist\ completa.
 echo ============================================
 echo.

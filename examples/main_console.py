@@ -298,7 +298,7 @@ def main():
     
     while True:
         print("\n" + "="*50)
-        print("🖱️  GRABADOR DE MOUSE - CLICKER SAP")
+        print("🖱️  GRABADOR DE MOUSE - AUTOCLICKER")
         print("="*50)
         print("GRABACIÓN:")
         print("  1. Grabar nuevos movimientos")

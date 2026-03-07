@@ -1,5 +1,5 @@
 """
-launcher.py - Lanza Clicker SAP en una ventana nativa estilo app.
+launcher.py - Lanza Autoclicker en una ventana nativa estilo app.
 Arranca Streamlit como subproceso y usa Chrome/Edge en "App Mode" (--app=URL)
 para ocultar pestañas y menús, sin depender de librerías externas que fallan en compilar.
 """
@@ -69,7 +69,7 @@ def get_browser_path():
 
 
 def set_always_on_top():
-    """Busca la ventana de Clicker SAP y la pone siempre visible (always-on-top) usando Win32 API."""
+    """Busca la ventana de Autoclicker y la pone siempre visible (always-on-top) usando Win32 API."""
     try:
         import ctypes
         from ctypes import wintypes
@@ -83,7 +83,7 @@ def set_always_on_top():
         # Esperar a que la ventana aparezca (hasta 10s)
         hwnd = None
         for _ in range(40):
-            hwnd = user32.FindWindowW(None, "Clicker SAP")
+            hwnd = user32.FindWindowW(None, "Autoclicker")
             if hwnd:
                 break
             time.sleep(0.25)
@@ -103,7 +103,7 @@ def main():
     # En modo PyInstaller, los archivos están en _MEIPASS
     if getattr(sys, 'frozen', False):
         script_dir = os.path.dirname(sys.executable)
-    app_py = os.path.join(script_dir, "clicker_sap", "app.py")
+    app_py = os.path.join(script_dir, "autoclicker", "app.py")
     port = find_free_port(STREAMLIT_PORT)
 
     streamlit_args = [
@@ -152,7 +152,7 @@ def main():
     browser_path = get_browser_path()
     if browser_path:
         # Usar un perfil aislado para garantizar que respeta el tamaño y guarda estado propio
-        user_data_dir = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Clicker-SAP", "ChromeProfile")
+        user_data_dir = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Autoclicker", "ChromeProfile")
 
         # Limpiar caché del perfil para evitar errores de módulos JS obsoletos
         cache_dirs = ["Cache", "Code Cache", "Service Worker"]

@@ -1,4 +1,4 @@
-# Clicker-SAP 🖱️
+# Autoclicker 🖱️
 
 Un grabador y reproductor de eventos de mouse y teclado desarrollado en Python con interfaz gráfica moderna. Perfecto para automatizar tareas repetitivas que requieren interacción precisa.
 
@@ -19,8 +19,8 @@ Un grabador y reproductor de eventos de mouse y teclado desarrollado en Python c
 
 Si solo quieres usar la aplicación sin instalar Python:
 
-1. Ve a la sección [**Releases**](https://github.com/Alvaro-San-Cav/Clicker-SAP/releases) del repositorio
-2. Descarga `ClickerSAP.exe` de la última versión
+1. Ve a la sección [**Releases**](https://github.com/Alvaro-San-Cav/Autoclicker/releases) del repositorio
+2. Descarga `Autoclicker.exe` de la última versión
 3. Ejecuta el `.exe` — no necesitas instalar nada más
 
 > ⚠️ Windows puede mostrar una advertencia de SmartScreen al ejecutar el `.exe` por primera vez. Haz clic en **"Más información" → "Ejecutar de todas formas"**.
@@ -37,8 +37,8 @@ Si solo quieres usar la aplicación sin instalar Python:
 
 1. Clona este repositorio:
 ```bash
-git clone https://github.com/Alvaro-San-Cav/Clicker-SAP.git
-cd Clicker-SAP
+git clone https://github.com/Alvaro-San-Cav/Autoclicker.git
+cd Autoclicker
 ```
 
 2. Crea un entorno virtual (recomendado):
@@ -62,7 +62,7 @@ Abre la aplicación en una ventana nativa sin pestañas del navegador.
 
 ### Modo navegador:
 ```bash
-streamlit run clicker_sap/app.py
+streamlit run autoclicker/app.py
 ```
 Abre la aplicación en tu navegador predeterminado.
 
@@ -71,8 +71,8 @@ Abre la aplicación en tu navegador predeterminado.
 Ver [STRUCTURE.md](STRUCTURE.md) para detalles completos de la arquitectura.
 
 ```
-Clicker-SAP/
-├── clicker_sap/              # Paquete principal
+Autoclicker/
+├── autoclicker/              # Paquete principal
 │   ├── app.py               # Interfaz Streamlit
 │   ├── recorder.py          # Lógica de grabación/reproducción
 │   ├── scheduler.py         # Sistema de alertas programadas
@@ -142,7 +142,7 @@ build_exe.bat
 
 > Requiere PyInstaller (se instala automáticamente durante el build).
 
-El ejecutable se generará en `dist/ClickerSAP.exe`. Puedes distribuir este archivo directamente.
+El ejecutable se generará en `dist/Autoclicker.exe`. Puedes distribuir este archivo directamente.
 
 ## 📝 Formato de grabación
 
@@ -194,7 +194,7 @@ El programa es compatible con grabaciones antiguas (solo array de eventos).
 
 - **Solo Windows**: El modo ventana nativa y la compilación .exe están diseñados para Windows 10/11
 - Asegúrate de tener **Google Chrome** o **Microsoft Edge** instalado para el modo ventana nativa
-- En Linux/macOS puedes usar el modo navegador (`streamlit run clicker_sap/app.py`) pero sin modo ventana nativa
+- En Linux/macOS puedes usar el modo navegador (`streamlit run autoclicker/app.py`) pero sin modo ventana nativa
 - Usa este software de manera responsable y ética
 
 ## 🤝 Contribuciones
@@ -217,5 +217,5 @@ Desarrollado por Alvaro San Cav
 
 ## 🔗 Enlaces
 
-- [Repositorio GitHub](https://github.com/Alvaro-San-Cav/Clicker-SAP)
+- [Repositorio GitHub](https://github.com/Alvaro-San-Cav/Autoclicker)
 - [Documentación de pynput](https://pynput.readthedocs.io/)
