@@ -94,13 +94,29 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Evitar que Chrome sugiera traducir la página y forzar idioma
-st.markdown("""
-<script>
-    document.documentElement.lang = 'es';
-</script>
-<meta name="google" content="notranslate">
-""", unsafe_allow_html=True)
+def configurar_idioma(idioma="es"):
+    """
+    Fuerza el idioma del documento HTML y evita que Chrome sugiera traducirlo.
+    """
+    codigo_js = f"""
+    <script>
+        // 1. Forzar el atributo de idioma en la etiqueta <html> principal
+        document.documentElement.lang = '{idioma}';
+
+        // 2. Inyectar la etiqueta <meta> en el <head> (su lugar correcto)
+        // Se añade una validación para no duplicarla en cada recarga de Streamlit
+        if (!document.querySelector('meta[name="google"]')) {{
+            const meta = document.createElement('meta');
+            meta.name = 'google';
+            meta.content = 'notranslate';
+            document.head.appendChild(meta);
+        }}
+    </script>
+    """
+    st.markdown(codigo_js, unsafe_allow_html=True)
+
+
+configurar_idioma()
 
 # ────────────────────────────────────────────────────────────
 # CSS personalizado — estilo oscuro premium
