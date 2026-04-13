@@ -7,6 +7,7 @@ import time
 import json
 import os
 import sys
+import threading
 from datetime import datetime
 from pynput import mouse, keyboard
 from pynput.mouse import Button, Controller as MouseController
@@ -43,6 +44,8 @@ class MouseRecorder:
         self.start_time = None
         self.listener = None
         self.kb_listener = None
+        self.playback_stop_listener = None
+        self.play_stop_event = threading.Event()
         self.recordings_dir = recordings_dir
         self.current_recording_name = None
         
@@ -166,63 +169,108 @@ class MouseRecorder:
     # Reproducción
     # ──────────────────────────────────────────
 
+    def _on_playback_key_press(self, key):
+        if self.playing and key == Key.esc:
+            self.stop_playback()
+            return False
+        return True
+
+    def _start_playback_stop_listener(self):
+        if self.playback_stop_listener:
+            return
+        try:
+            self.playback_stop_listener = KeyboardListener(on_press=self._on_playback_key_press)
+            self.playback_stop_listener.start()
+        except Exception:
+            self.playback_stop_listener = None
+
+    def _stop_playback_stop_listener(self):
+        if not self.playback_stop_listener:
+            return
+        try:
+            self.playback_stop_listener.stop()
+        except Exception:
+            pass
+        self.playback_stop_listener = None
+
     def play_recording(self, speed=1.0, on_progress=None, on_cancel_check=None):
         if not self.events:
             return False
 
+        self.play_stop_event.clear()
         self.playing = True
         start_time = time.time()
+        cancelled = False
+        self._start_playback_stop_listener()
 
-        for i, event in enumerate(self.events):
-            if on_cancel_check and on_cancel_check():
-                self.playing = False
-                break
+        try:
+            for i, event in enumerate(self.events):
+                should_cancel = self.play_stop_event.is_set() or (on_cancel_check and on_cancel_check())
+                if should_cancel:
+                    cancelled = True
+                    break
 
-            target_time = event['time'] / speed
-            elapsed = time.time() - start_time
-            if target_time > elapsed:
-                time.sleep(target_time - elapsed)
+                target_time = event['time'] / speed
+                while True:
+                    elapsed = time.time() - start_time
+                    remaining = target_time - elapsed
+                    if remaining <= 0:
+                        break
 
-            etype = event['type']
-            if etype == 'move':
-                self.mouse_controller.position = (event['x'], event['y'])
-            elif etype == 'click':
-                self.mouse_controller.position = (event['x'], event['y'])
-                button = Button.left if event['button'] == 'left' else Button.right
-                if event['pressed']:
-                    self.mouse_controller.press(button)
-                else:
-                    self.mouse_controller.release(button)
-            elif etype == 'scroll':
-                self.mouse_controller.position = (event['x'], event['y'])
-                self.mouse_controller.scroll(event['dx'], event['dy'])
-            elif etype == 'key_press':
-                try:
-                    k = event['key']
-                    if k.startswith('Key.'): 
-                        k = getattr(Key, k[4:], None)
-                    if k:
-                        self.keyboard_controller.press(k)
-                except Exception:
-                    pass
-            elif etype == 'key_release':
-                try:
-                    k = event['key']
-                    if k.startswith('Key.'):
-                        k = getattr(Key, k[4:], None)
-                    if k:
-                        self.keyboard_controller.release(k)
-                except Exception:
-                    pass
+                    should_cancel = self.play_stop_event.is_set() or (on_cancel_check and on_cancel_check())
+                    if should_cancel:
+                        cancelled = True
+                        break
 
-            if on_progress:
-                on_progress(i + 1, len(self.events))
+                    time.sleep(min(0.02, remaining))
 
-        self.playing = False
-        return True
+                if cancelled:
+                    break
+
+                etype = event['type']
+                if etype == 'move':
+                    self.mouse_controller.position = (event['x'], event['y'])
+                elif etype == 'click':
+                    self.mouse_controller.position = (event['x'], event['y'])
+                    button = Button.left if event['button'] == 'left' else Button.right
+                    if event['pressed']:
+                        self.mouse_controller.press(button)
+                    else:
+                        self.mouse_controller.release(button)
+                elif etype == 'scroll':
+                    self.mouse_controller.position = (event['x'], event['y'])
+                    self.mouse_controller.scroll(event['dx'], event['dy'])
+                elif etype == 'key_press':
+                    try:
+                        k = event['key']
+                        if k.startswith('Key.'):
+                            k = getattr(Key, k[4:], None)
+                        if k:
+                            self.keyboard_controller.press(k)
+                    except Exception:
+                        pass
+                elif etype == 'key_release':
+                    try:
+                        k = event['key']
+                        if k.startswith('Key.'):
+                            k = getattr(Key, k[4:], None)
+                        if k:
+                            self.keyboard_controller.release(k)
+                    except Exception:
+                        pass
+
+                if on_progress:
+                    on_progress(i + 1, len(self.events))
+        finally:
+            self.playing = False
+            self.play_stop_event.clear()
+            self._stop_playback_stop_listener()
+
+        return not cancelled
 
     def stop_playback(self):
         """Cancela la reproducción en curso."""
+        self.play_stop_event.set()
         self.playing = False
 
     # ──────────────────────────────────────────

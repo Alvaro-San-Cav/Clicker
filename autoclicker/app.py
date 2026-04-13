@@ -340,6 +340,8 @@ def get_recorder():
 def _on_alert_trigger(alert):
     """Callback que ejecuta la rutina asociada a una alerta."""
     rec = get_recorder()
+    if rec.playing:
+        return
     meta = rec.load_recording(alert.recording)
     if meta:
         speed = meta.get('default_speed', 1.0)
@@ -364,6 +366,35 @@ if "status" not in st.session_state:
     st.session_state.status = "idle"  # idle | recording | playing
 if "last_msg" not in st.session_state:
     st.session_state.last_msg = ""
+if "loop_stop_event" not in st.session_state:
+    st.session_state.loop_stop_event = threading.Event()
+if "looping_routine" not in st.session_state:
+    st.session_state.looping_routine = None
+
+
+def stop_current_playback():
+    recorder.stop_playback()
+    st.session_state.status = "idle"
+    st.session_state.last_msg = t("msg_play_stopped", LANG)
+
+
+def start_playback_async(speed=1.0, name=""):
+    if recorder.playing:
+        st.toast(t("msg_play_busy", LANG))
+        return False
+
+    routine_name = name or recorder.current_recording_name or "Routine"
+    st.session_state.status = "playing"
+    st.session_state.last_msg = t("msg_playing_hint", LANG, name=routine_name, speed=speed)
+
+    def _play(spd=speed):
+        recorder.play_recording(speed=spd)
+        if not st.session_state.get("looping_routine"):
+            st.session_state.status = "idle"
+            st.session_state.last_msg = ""
+
+    threading.Thread(target=_play, daemon=True).start()
+    return True
 
 
 # ────────────────────────────────────────────────────────────
@@ -406,6 +437,12 @@ tab_auto, tab_rec, tab_routines, tab_alerts, tab_settings = st.tabs([
 with tab_auto:
     st.markdown(t("auto_title", LANG))
     st.caption(t("auto_desc", LANG))
+
+    if recorder.playing and not st.session_state.get("looping_routine"):
+        if st.button(t("btn_stop_play", LANG), key="stop_play_auto", use_container_width=True):
+            stop_current_playback()
+            st.toast(t("msg_play_stopped", LANG))
+            st.rerun()
     
     favorites = st.session_state.app_config.get("favorites", [])
     all_recordings = recorder.list_recordings()
@@ -431,11 +468,8 @@ with tab_auto:
                 m = recorder.load_recording(fav['filename'])
                 if m:
                     s = m.get('default_speed', 1.0)
-                    threading.Thread(
-                        target=lambda: recorder.play_recording(speed=s),
-                        daemon=True
-                    ).start()
-                    st.toast(t("msg_playing_fav", LANG, name=fname, speed=s))
+                    if start_playback_async(speed=s, name=fname):
+                        st.toast(t("msg_playing_fav", LANG, name=fname, speed=s))
 
 
 # ═══════════════════════════════════════════════════════════
@@ -498,6 +532,9 @@ with tab_rec:
     st.write("")
     if status == "playing":
         st.markdown(f'<div style="text-align:center"><span class="status-badge status-playing">{t("status_playing", LANG)}</span></div>', unsafe_allow_html=True)
+        if st.button(t("btn_stop_play", LANG), key="stop_play_rec", use_container_width=True, type="secondary"):
+            stop_current_playback()
+            st.rerun()
         # Auto-rerun para detectar cuando termine la reproducción
         time.sleep(1)
         if st.session_state.status != "playing":
@@ -537,14 +574,9 @@ with tab_rec:
             st.write("")
             st.write("")
             if st.button(t("btn_test_play", LANG), use_container_width=True):
-                st.session_state.status = "playing"
-                st.session_state.last_msg = t("msg_testing", LANG, speed=speed)
-                def _play(spd=speed):
-                    recorder.play_recording(speed=spd)
-                    st.session_state.status = "idle"
-                    st.session_state.last_msg = ""
-                threading.Thread(target=_play, daemon=True).start()
-                st.rerun()
+                if start_playback_async(speed=speed, name=rec_name.strip() or t("btn_test_play", LANG)):
+                    st.toast(t("msg_testing", LANG, speed=speed))
+                    st.rerun()
 
 
 # ═══════════════════════════════════════════════════════════
@@ -557,6 +589,29 @@ with tab_routines:
                             placeholder=t("search_placeholder", LANG))
 
     recordings = recorder.list_recordings()
+
+    active_loop_file = st.session_state.get("looping_routine")
+    if recorder.playing and not active_loop_file:
+        if st.button(t("btn_stop_play", LANG), key="stop_play_routines", use_container_width=True):
+            stop_current_playback()
+            st.toast(t("msg_play_stopped", LANG))
+            st.rerun()
+
+    if active_loop_file:
+        active_loop_name = next(
+            (r.get('name', r['filename']) for r in recordings if r['filename'] == active_loop_file),
+            active_loop_file.replace('.json', '')
+        )
+        st.info(t("loop_running", LANG, name=active_loop_name))
+        if st.button(t("btn_stop_loop", LANG), key="stop_loop_global", use_container_width=True):
+            st.session_state.loop_stop_event.set()
+            recorder.stop_playback()
+            st.session_state.looping_routine = None
+            st.session_state.status = "idle"
+            st.session_state.last_msg = ""
+            st.toast(t("msg_loop_stopped", LANG, name=active_loop_name))
+            st.rerun()
+
     if search:
         search_lower = search.lower()
         recordings = [r for r in recordings
@@ -585,13 +640,15 @@ with tab_routines:
             spd = meta.get('default_speed', 1.0)
             desc = meta.get('description', '')
             created = meta.get('created', '')
+            active_loop_file = st.session_state.get("looping_routine")
+            loop_active_for_row = active_loop_file == meta['filename']
             try:
                 created = datetime.fromisoformat(created).strftime("%d/%m/%Y %H:%M")
             except Exception:
                 pass
 
             with st.container():
-                c_info, c_fav, c_play, c_del = st.columns([5, 1, 1, 1], gap="small")
+                c_info, c_fav, c_play, c_loop, c_del = st.columns([5, 1, 1, 1, 1], gap="small")
                 with c_info:
                     info_parts = [f"⏱️ {dur:.1f}s", f"⚡ {spd:.1f}x"]
                     caption_str = " · ".join(info_parts)
@@ -617,17 +674,63 @@ with tab_routines:
                         st.rerun()
 
                 with c_play:
-                    if st.button("▶", key=f"play_{i}", help=t("btn_play", LANG), use_container_width=True):
+                    if st.button(
+                        "▶",
+                        key=f"play_{i}",
+                        help=t("btn_play", LANG),
+                        use_container_width=True,
+                        disabled=bool(active_loop_file or recorder.playing)
+                    ):
                         m = recorder.load_recording(meta['filename'])
                         if m:
                             s = m.get('default_speed', 1.0)
-                            threading.Thread(
-                                target=lambda: recorder.play_recording(speed=s),
-                                daemon=True
-                            ).start()
-                            st.toast(t("msg_testing", LANG, speed=s))
+                            if start_playback_async(speed=s, name=name):
+                                st.toast(t("msg_testing", LANG, speed=s))
+
+                with c_loop:
+                    loop_label = "⏹" if loop_active_for_row else "∞"
+                    loop_help = t("btn_stop_loop", LANG) if loop_active_for_row else t("btn_loop", LANG)
+                    if st.button(loop_label, key=f"loop_{i}", help=loop_help, use_container_width=True):
+                        if loop_active_for_row:
+                            st.session_state.loop_stop_event.set()
+                            recorder.stop_playback()
+                            st.session_state.looping_routine = None
+                            st.session_state.status = "idle"
+                            st.session_state.last_msg = ""
+                            st.toast(t("msg_loop_stopped", LANG, name=name))
+                            st.rerun()
+                        elif active_loop_file:
+                            st.toast(t("msg_loop_busy", LANG))
+                        else:
+                            m = recorder.load_recording(meta['filename'])
+                            if m:
+                                s = m.get('default_speed', 1.0)
+                                st.session_state.loop_stop_event.clear()
+                                st.session_state.looping_routine = meta['filename']
+                                st.session_state.status = "playing"
+                                st.session_state.last_msg = t("msg_loop_started", LANG, name=name, speed=s)
+
+                                def _play_loop(spd=s, stop_event=st.session_state.loop_stop_event):
+                                    while not stop_event.is_set():
+                                        ok = recorder.play_recording(
+                                            speed=spd,
+                                            on_cancel_check=stop_event.is_set
+                                        )
+                                        if not ok:
+                                            break
+
+                                threading.Thread(target=_play_loop, daemon=True).start()
+                                st.toast(t("msg_loop_started", LANG, name=name, speed=s))
+                                st.rerun()
+
                 with c_del:
                     if st.button("🗑", key=f"del_{i}", help=t("btn_del", LANG), use_container_width=True):
+                        if st.session_state.get("looping_routine") == meta['filename']:
+                            st.session_state.loop_stop_event.set()
+                            recorder.stop_playback()
+                            st.session_state.looping_routine = None
+                            st.session_state.status = "idle"
+                            st.session_state.last_msg = ""
                         recorder.delete_recording(meta['filename'])
                         st.session_state.edit_select_idx = 0
                         st.rerun()
